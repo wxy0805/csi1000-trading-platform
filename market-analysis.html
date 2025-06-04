@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>市场分析 - 中证1000指数期权交易策略平台</title>
+    <style>
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #0d47a1;
+            --accent-color: #00c853;
+            --text-color: #e0e0e0;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --gradient-bg: linear-gradient(135deg, #1a237e, #0d47a1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: var(--gradient-bg);
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, #ffffff, #00c853);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            padding: 5px 0;
+            transition: all 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .page-header {
+            padding: 60px 0 30px;
+            text-align: center;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            color: #b0b0b0;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .dashboard {
+            padding: 30px 0 60px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .main-chart-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .chart-controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .chart-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-color);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .chart-control:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .chart-control.active {
+            background-color: var(--accent-color);
+            color: #121212;
+        }
+        
+        .main-chart {
+            width: 100%;
+            height: 400px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #b0b0b0;
+        }
+        
+        .chart-placeholder-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+        
+        .chart-placeholder-text {
+            font-size: 1.2rem;
+        }
+        
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .legend-color.price {
+            background-color: var(--accent-color);
+        }
+        
+        .legend-color.volume {
+            background-color: #ff9800;
+        }
+        
+        .legend-color.ma20 {
+            background-color: #2196f3;
+        }
+        
+        .legend-color.ma60 {
+            background-color: #e91e63;
+        }
+        
+        .sidebar-widgets {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .widget {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .widget-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .widget-refresh {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .market-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .summary-item {
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .summary-value.up {
+            color: #4caf50;
+        }
+        
+        .summary-value.down {
+            color: #f44336;
+        }
+        
+        .summary-label {
+            font-size: 0.8rem;
+            color: #b0b0b0;
+        }
+        
+        .option-chain {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        
+        .option-chain::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .option-chain::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .option-chain::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        
+        .option-chain::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .option-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .option-table th, .option-table td {
+            padding: 8px 12px;
+            text-align: right;
+            font-size: 0.9rem;
+        }
+        
+        .option-table th {
+            color: #b0b0b0;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .option-table td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .option-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .option-table .call {
+            color: #4caf50;
+        }
+        
+        .option-table .put {
+            color: #f44336;
+        }
+        
+        .option-strike {
+            background-color: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+        }
+        
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .news-item {
+            display: flex;
+            gap: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .news-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .news-time {
+            min-width: 60px;
+            font-size: 0.8rem;
+            color: #b0b0b0;
+        }
+        
+        .news-content a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .news-content a:hover {
+            color: var(--accent-color);
+        }
+        
+        .news-impact {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            margin-left: 8px;
+        }
+        
+        .news-impact.high {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+        
+        .news-impact.medium {
+            background-color: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+        }
+        
+        .news-impact.low {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        
+        .analysis-tabs {
+            margin-top: 50px;
+        }
+        
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .tab-button {
+            padding: 12px 25px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            color: var(--accent-color);
+        }
+        
+        .tab-button::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        
+        .tab-button.active::after {
+            width: 100%;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .analysis-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .analysis-chart {
+            width: 100%;
+            height: 250px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .analysis-info {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .analysis-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .analysis-label {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+        
+        .analysis-change {
+            text-align: right;
+        }
+        
+        .analysis-change-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .analysis-change-value.up {
+            color: #4caf50;
+        }
+        
+        .analysis-change-value.down {
+            color: #f44336;
+        }
+        
+        .analysis-change-label {
+            font-size: 0.8rem;
+            color: #b0b0b0;
+        }
+        
+        .volatility-section {
+            margin-top: 50px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .section-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .action-button {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-color);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .action-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .action-button i {
+            font-size: 1rem;
+        }
+        
+        .volatility-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .volatility-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .volatility-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-color), transparent);
+        }
+        
+        .volatility-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .volatility-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .volatility-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .volatility-chart {
+            width: 100%;
+            height: 100px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .volatility-stats {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .volatility-stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #b0b0b0;
+        }
+        
+        .correlation-section {
+            margin-top: 50px;
+            margin-bottom: 60px;
+        }
+        
+        .correlation-table-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow-x: auto;
+        }
+        
+        .correlation-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .correlation-table th, .correlation-table td {
+            padding: 12px 15px;
+            text-align: center;
+        }
+        
+        .correlation-table th {
+            color: #b0b0b0;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .correlation-table td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .correlation-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .correlation-table th:first-child, .correlation-table td:first-child {
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .correlation-value {
+            position: relative;
+        }
+        
+        .correlation-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.2;
+        }
+        
+        .correlation-bar.positive {
+            background-color: #4caf50;
+        }
+        
+        .correlation-bar.negative {
+            background-color: #f44336;
+        }
+        
+        .correlation-text {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .correlation-text.positive {
+            color: #4caf50;
+        }
+        
+        .correlation-text.negative {
+            color: #f44336;
+        }
+        
+        .correlation-text.neutral {
+            color: #b0b0b0;
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo {
+            margin-bottom: 20px;
+        }
+        
+        .footer-logo img {
+            height: 40px;
+        }
+        
+        .footer-description {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+        
+        .footer-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #b0b0b0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-color);
+            padding-left: 5px;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .volatility-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            
+            .logo {
+                margin-bottom: 20px;
+            }
+            
+            nav ul {
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 15px;
+            }
+            
+            .volatility-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="static/logo.png" alt="Logo">
+                <h1>量化交易策略平台</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="market-analysis.html">市场分析</a></li>
+                    <li><a href="#">交易策略</a></li>
+                    <li><a href="#">历史回测</a></li>
+                    <li><a href="#">实时监控</a></li>
+                    <li><a href="#">会员中心</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">中证1000指数市场分析</h1>
+            <p class="page-description">全方位分析中证1000指数市场走势、波动率、相关性及期权定价，为您的交易决策提供数据支持。</p>
+        </div>
+    </section>
+
+    <section class="dashboard">
+        <div class="container">
+            <div class="dashboard-grid">
+                <div class="main-chart-container">
+                    <div class="chart-header">
+                        <h2 class="chart-title">中证1000指数走势</h2>
+                        <div class="chart-controls">
+                            <button class="chart-control">1D</button>
+                            <button class="chart-control active">1W</button>
+                            <button class="chart-control">1M</button>
+                            <button class="chart-control">3M</button>
+                            <button class="chart-control">1Y</button>
+                            <button class="chart-control">YTD</button>
+                        </div>
+                    </div>
+                    <div class="main-chart">
+                        <div class="chart-placeholder">
+                            <div class="chart-placeholder-icon">📊</div>
+                            <div class="chart-placeholder-text">图表加载中...</div>
+                        </div>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color price"></div>
+                            <span>价格</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color volume"></div>
+                            <span>成交量</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color ma20"></div>
+                            <span>MA20</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color ma60"></div>
+                            <span>MA60</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-widgets">
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">市场概览</h3>
+                            <button class="widget-refresh">↻</button>
+                        </div>
+                        <div class="market-summary">
+                            <div class="summary-item">
+                                <p class="summary-value">6,789.45</p>
+                                <p class="summary-label">最新价</p>
+                            </div>
+                            <div class="summary-item">
+                                <p class="summary-value up">+2.34%</p>
+                                <p class="summary-label">日涨跌幅</p>
+                            </div>
+                            <div class="summary-item">
+                                <p class="summary-value">6,823.56</p>
+                                <p class="summary-label">今日最高</p>
+                            </div>
+                            <div class="summary-item">
+                                <p class="summary-value">6,712.89</p>
+                                <p class="summary-label">今日最低</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">期权链</h3>
+                            <button class="widget-refresh">↻</button>
+                        </div>
+                        <div class="option-chain">
+                            <table class="option-table">
+                                <thead>
+                                    <tr>
+                                        <th class="call">看涨</th>
+                                        <th>行权价</th>
+                                        <th class="put">看跌</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="call">12.45</td>
+                                        <td class="option-strike">6,600</td>
+                                        <td class="put">3.21</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="call">10.23</td>
+                                        <td class="option-strike">6,650</td>
+                                        <td class="put">4.56</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="call">8.76</td>
+                                        <td class="option-strike">6,700</td>
+                                        <td class="put">6.32</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="call">6.54</td>
+                                        <td class="option-strike">6,750</td>
+                                        <td class="put">8.45</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="call">4.87</td>
+                                        <td class="option-strike">6,800</td>
+                                        <td class="put">10.76</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="call">3.21</td>
+                                        <td class="option-strike">6,850</td>
+                                        <td class="put">13.24</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="call">2.15</td>
+                                        <td class="option-strike">6,900</td>
+                                        <td class="put">16.78</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">市场新闻</h3>
+                            <button class="widget-refresh">↻</button>
+                        </div>
+                        <div class="news-list">
+                            <div class="news-item">
+                                <div class="news-time">10:30</div>
+                                <div class="news-content">
+                                    <a href="#">央行宣布降准0.5个百分点，释放长期资金约1万亿元</a>
+                                    <span class="news-impact high">高影响</span>
+                                </div>
+                            </div>
+                            <div class="news-item">
+                                <div class="news-time">09:45</div>
+                                <div class="news-content">
+                                    <a href="#">国家统计局公布8月PMI数据，制造业PMI为49.8%</a>
+                                    <span class="news-impact medium">中影响</span>
+                                </div>
+                            </div>
+                            <div class="news-item">
+                                <div class="news-time">09:15</div>
+                                <div class="news-content">
+                                    <a href="#">证监会：进一步完善股票发行注册制相关制度</a>
+                                    <span class="news-impact medium">中影响</span>
+                                </div>
+                            </div>
+                            <div class="news-item">
+                                <div class="news-time">08:30</div>
+                                <div class="news-content">
+                                    <a href="#">多家券商发布中证1000指数投资策略报告</a>
+                                    <span class="news-impact low">低影响</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="analysis-tabs">
+        <div class="container">
+            <div class="tabs-header">
+                <button class="tab-button active">技术指标</button>
+                <button class="tab-button">趋势分析</button>
+                <button class="tab-button">支撑阻力</button>
+                <button class="tab-button">成交量分析</button>
+            </div>
+            <div class="tab-content active">
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <h3 class="chart-title">相对强弱指标 (RSI)</h3>
+                        <div class="analysis-chart"></div>
+                        <div class="analysis-info">
+                            <div>
+                                <p class="analysis-value">67.8</p>
+                                <p class="analysis-label">当前RSI(14)</p>
+                            </div>
+                            <div class="analysis-change">
+                                <p class="analysis-change-value up">+5.2</p>
+                                <p class="analysis-change-label">日变化</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="analysis-card">
+                        <h3 class="chart-title">移动平均线收敛散度 (MACD)</h3>
+                        <div class="analysis-chart"></div>
+                        <div class="analysis-info">
+                            <div>
+                                <p class="analysis-value">0.24</p>
+                                <p class="analysis-label">MACD值</p>
+                            </div>
+                            <div class="analysis-change">
+                                <p class="analysis-change-value up">+0.08</p>
+                                <p class="analysis-change-label">日变化</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="analysis-card">
+                        <h3 class="chart-title">随机指标 (KDJ)</h3>
+                        <div class="analysis-chart"></div>
+                        <div class="analysis-info">
+                            <div>
+                                <p class="analysis-value">82.3</p>
+                                <p class="analysis-label">K值</p>
+                            </div>
+                            <div class="analysis-change">
+                                <p class="analysis-change-value up">+3.7</p>
+                                <p class="analysis-change-label">日变化</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="analysis-card">
+                        <h3 class="chart-title">布林带 (Bollinger Bands)</h3>
+                        <div class="analysis-chart"></div>
+                        <div class="analysis-info">
+                            <div>
+                                <p class="analysis-value">0.85</p>
+                                <p class="analysis-label">%B值</p>
+                            </div>
+                            <div class="analysis-change">
+                                <p class="analysis-change-value up">+0.12</p>
+                                <p class="analysis-change-label">日变化</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content">
+                <!-- 趋势分析内容 -->
+                <p>趋势分析内容将在这里显示</p>
+            </div>
+            <div class="tab-content">
+                <!-- 支撑阻力内容 -->
+                <p>支撑阻力内容将在这里显示</p>
+            </div>
+            <div class="tab-content">
+                <!-- 成交量分析内容 -->
+                <p>成交量分析内容将在这里显示</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="volatility-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">波动率分析</h2>
+                <div class="section-actions">
+                    <button class="action-button">导出数据</button>
+                    <button class="action-button">设置提醒</button>
+                </div>
+            </div>
+            <div class="volatility-grid">
+                <div class="volatility-card">
+                    <div class="volatility-header">
+                        <h3 class="volatility-title">历史波动率 (HV)</h3>
+                    </div>
+                    <p class="volatility-value">18.7%</p>
+                    <div class="volatility-chart"></div>
+                    <div class="volatility-stats">
+                        <div class="volatility-stat">
+                            <p class="stat-value">15.2%</p>
+                            <p class="stat-label">30日低点</p>
+                        </div>
+                        <div class="volatility-stat">
+                            <p class="stat-value">22.8%</p>
+                            <p class="stat-label">30日高点</p>
+                        </div>
+                        <div class="volatility-stat">
+                            <p class="stat-value">19.5%</p>
+                            <p class="stat-label">30日均值</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="volatility-card">
+                    <div class="volatility-header">
+                        <h3 class="volatility-title">隐含波动率 (IV)</h3>
+                    </div>
+                    <p class="volatility-value">24.5%</p>
+                    <div class="volatility-chart"></div>
+                    <div class="volatility-stats">
+                        <div class="volatility-stat">
+                            <p class="stat-value">20.3%</p>
+                            <p class="stat-label">30日低点</p>
+                        </div>
+                        <div class="volatility-stat">
+                            <p class="stat-value">28.7%</p>
+                            <p class="stat-label">30日高点</p>
+                        </div>
+                        <div class="volatility-stat">
+                            <p class="stat-value">25.2%</p>
+                            <p class="stat-label">30日均值</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="volatility-card">
+                    <div class="volatility-header">
+                        <h3 class="volatility-title">波动率微笑</h3>
+                    </div>
+                    <p class="volatility-value">5.8%</p>
+                    <div class="volatility-chart"></div>
+                    <div class="volatility-stats">
+                        <div class="volatility-stat">
+                            <p class="stat-value">3.2%</p>
+                            <p class="stat-label">30日低点</p>
+                        </div>
+                        <div class="volatility-stat">
+                            <p class="stat-value">7.5%</p>
+                            <p class="stat-label">30日高点</p>
+                        </div>
+                        <div class="volatility-stat">
+                            <p class="stat-value">5.3%</p>
+                            <p class="stat-label">30日均值</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="correlation-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">相关性分析</h2>
+                <div class="section-actions">
+                    <button class="action-button">自定义指标</button>
+                </div>
+            </div>
+            <div class="correlation-table-container">
+                <table class="correlation-table">
+                    <thead>
+                        <tr>
+                            <th>指数/资产</th>
+                            <th>中证1000</th>
+                            <th>上证50</th>
+                            <th>沪深300</th>
+                            <th>创业板指</th>
+                            <th>黄金</th>
+                            <th>原油</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>中证1000</td>
+                            <td>
+                                <div class="correlation-value">
+                                    <div class="correlation-bar positive" style="width: 100%;"></div>
+                                    <span class="correlation-text">1.00</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="correlation-value">
+                                    <div class="correlation-bar positive" style="width: 68%;"></div>
+                                    <span class="correlation-text positive">0.68</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="correlation-value">
+                                    <div class="correlation-bar positive" style="width: 75%;"></div>
+                                    <span class="correlation-text positive">0.75</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="correlation-value">
+                                    <div class="correlation-bar positive" style="width: 82%;"></div>
+                                    <span class="correlation-text positive">0.82</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="correlation-value">
+                                    <div class="correlation-bar negative" style="width: 12%;"></div>
+                                    <span class="correlation-text negative">-0.12</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="correlation-value">
+                                    <div class="correlation-bar positive" style="width: 23%;"></div>
+                                    <span class="correlation-text positive">0.23</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>上证50</td>
+                            <td>
+                                <div class="correlation-value">
+                                    <div class="correlation-bar positive" style="width: 68%;"></div>
+                                    <span class="correlation-text positive">0.68</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="correlation-value">
+                                    <div class="correlation-bar positive" style="width: 100%;"></div>
+                                    <span class="correlation-text">1.00

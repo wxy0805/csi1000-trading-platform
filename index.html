@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSI 1000期权量化交易平台</title>
+    <!-- 全局样式 -->
+    <link rel="stylesheet" href="global-styles.css">
+    <style>
+        /* 页面特定样式保持不变，但移除重复的全局样式 */
+        .hero-section {
+            padding: 120px 0 80px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-secondary), var(--success-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeIn 1s ease-out 0.6s both;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 80px 0;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 40px 30px;
+            transition: all var(--transition-normal);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* 其他页面特定样式... */
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #0d47a1;
+            --accent-color: #00c853;
+            --text-color: #e0e0e0;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --gradient-bg: linear-gradient(135deg, #1a237e, #0d47a1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: var(--gradient-bg);
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, #ffffff, #00c853);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            padding: 5px 0;
+            transition: all 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .hero {
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('static/hero-bg.jpg') center/cover no-repeat;
+            opacity: 0.2;
+            z-index: -1;
+        }
+        
+        .hero-content {
+            width: 50%;
+            padding-right: 50px;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            color: #b0b0b0;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 200, 83, 0.4);
+        }
+        
+        .hero-chart {
+            width: 50%;
+            position: relative;
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.1), rgba(0, 200, 83, 0.05));
+            z-index: 1;
+        }
+        
+        .chart-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+        
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .chart-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+        
+        .chart-change {
+            font-size: 1rem;
+            color: #00c853;
+        }
+        
+        .features {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .feature-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #b0b0b0;
+        }
+        
+        .strategy-section {
+            padding: 80px 0;
+            background-color: rgba(26, 35, 126, 0.1);
+        }
+        
+        .strategy-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .strategy-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .strategy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .strategy-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .strategy-tag {
+            background-color: rgba(0, 200, 83, 0.2);
+            color: var(--accent-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .strategy-metrics {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .metric {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+        
+        .strategy-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+        }
+        
+        .strategy-action {
+            margin-top: auto;
+            text-align: right;
+        }
+        
+        .strategy-button {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--accent-color);
+            padding: 8px 20px;
+            border: 2px solid var(--accent-color);
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .strategy-button:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .data-section {
+            padding: 80px 0;
+        }
+        
+        .data-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .data-tab {
+            padding: 10px 25px;
+            margin: 0 10px;
+            background-color: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .data-tab.active {
+            color: var(--accent-color);
+        }
+        
+        .data-tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        
+        .data-tab.active::after {
+            width: 100%;
+        }
+        
+        .data-content {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .data-chart {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .data-indicators {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .indicator {
+            background-color: rgba(26, 35, 126, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .indicator-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+        
+        .indicator-label {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+        
+        .testimonials {
+            padding: 80px 0;
+            background-color: rgba(26, 35, 126, 0.1);
+        }
+        
+        .testimonial-slider {
+            position: relative;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+        
+        .testimonial-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin: 0 15px;
+        }
+        
+        .testimonial-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .testimonial-content::before {
+            content: '\201C';
+            font-size: 4rem;
+            color: rgba(0, 200, 83, 0.2);
+            position: absolute;
+            top: -20px;
+            left: -10px;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+        
+        .author-info h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+        
+        .cta-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .cta-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .cta-description {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #b0b0b0;
+            margin-bottom: 30px;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .secondary-button {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--text-color);
+            padding: 12px 30px;
+            border: 2px solid var(--text-color);
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .secondary-button:hover {
+            background-color: var(--text-color);
+            color: var(--dark-bg);
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo {
+            margin-bottom: 20px;
+        }
+        
+        .footer-logo img {
+            height: 40px;
+        }
+        
+        .footer-description {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+        
+        .footer-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #b0b0b0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-color);
+            padding-left: 5px;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .hero {
+                flex-direction: column;
+                height: auto;
+                padding: 60px 0;
+            }
+            
+            .hero-content, .hero-chart {
+                width: 100%;
+                padding-right: 0;
+            }
+            
+            .hero-content {
+                margin-bottom: 40px;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            
+            .logo {
+                margin-bottom: 20px;
+            }
+            
+            nav ul {
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 15px;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .features-grid, .strategy-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-indicators {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+        
+        .float {
+            animation: float 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="static/logo.png" alt="Logo">
+                <h1>量化交易策略平台</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">首页</a></li>
+                    <li><a href="#">市场分析</a></li>
+                    <li><a href="#">交易策略</a></li>
+                    <li><a href="#">历史回测</a></li>
+                    <li><a href="#">实时监控</a></li>
+                    <li><a href="#">会员中心</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container" style="display: flex; align-items: center;">
+            <div class="hero-content">
+                <h2 class="hero-title">中证1000指数期权<br>智能交易策略</h2>
+                <p class="hero-subtitle">基于实时数据分析和机器学习算法，为您提供精准的中证1000指数期权买方交易策略，提升投资胜率，降低风险。</p>
+                <a href="#" class="cta-button pulse">开始免费试用</a>
+            </div>
+            <div class="hero-chart">
+                <div class="chart-container float">
+                    <!-- 这里将来放置实时图表 -->
+                    <div class="chart-overlay">
+                        <h3 class="chart-title">中证1000指数</h3>
+                        <p class="chart-value">6,789.45</p>
+                        <p class="chart-change">+2.34%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">核心功能</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">实时数据分析</h3>
+                    <p class="feature-description">实时抓取市场数据，多维度分析中证1000指数走势，为交易决策提供数据支持。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3 class="feature-title">技术指标监控</h3>
+                    <p class="feature-description">监控多种技术指标，包括MACD、RSI、KDJ等，捕捉市场转折点和交易机会。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">AI策略优化</h3>
+                    <p class="feature-description">运用机器学习算法，不断优化交易策略，提高胜率和收益率。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3 class="feature-title">精准买卖点</h3>
+                    <p class="feature-description">根据多因子模型，精准推荐期权买入和卖出时机，降低交易风险。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3 class="feature-title">历史回测</h3>
+                    <p class="feature-description">对策略进行历史数据回测，验证策略有效性，持续改进交易模型。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">实时提醒</h3>
+                    <p class="feature-description">重要交易信号和市场异动实时提醒，确保您不错过任何交易机会。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="strategy-section">
+        <div class="container">
+            <h2 class="section-title">热门交易策略</h2>
+            <div class="strategy-cards">
+                <div class="strategy-card">
+                    <div class="strategy-header">
+                        <h3 class="strategy-title">波动率突破策略</h3>
+                        <span class="strategy-tag">高胜率</span>
+                    </div>
+                    <div class="strategy-metrics">
+                        <div class="metric">
+                            <p class="metric-value">78%</p>
+                            <p class="metric-label">胜率</p>
+                        </div>
+                        <div class="metric">
+                            <p class="metric-value">2.4</p>
+                            <p class="metric-label">收益风险比</p>
+                        </div>
+                        <div class="metric">
+                            <p class="metric-value">32%</p>
+                            <p class="metric-label">年化收益</p>
+                        </div>
+                    </div>
+                    <p class="strategy-description">基于中证1000指数波动率突破的期权买入策略，通过识别波动率收缩和爆发周期，在波动率低位买入期权，等待行情爆发获利。</p>
+                    <div class="strategy-action">
+                        <a href="#" class="strategy-button">查看详情</a>
+                    </div>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-header">
+                        <h3 class="strategy-title">趋势跟踪策略</h3>
+                        <span class="strategy-tag">稳健型</span>
+                    </div>
+                    <div class="strategy-metrics">
+                        <div class="metric">
+                            <p class="metric-value">65%</p>
+                            <p class="metric-label">胜率</p>
+                        </div>
+                        <div class="metric">
+                            <p class="metric-value">1.8</p>
+                            <p class="metric-label">收益风险比</p>
+                        </div>
+                        <div class="metric">
+                            <p class="metric-value">24%</p>
+                            <p class="metric-label">年化收益</p>
+                        </div>
+                    </div>
+                    <p class="strategy-description">结合多周期趋势分析和动量指标，在确认中证1000指数趋势形成后买入顺势期权，严格止损和利润保护机制。</p>
+                    <div class="strategy-action">
+                        <a href="#" class="strategy-button">查看详情</a>
+                    </div>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-header">
+                        <h3 class="strategy-title">价值回归策略</h3>
+                        <span class="strategy-tag">低风险</span>
+                    </div>
+                    <div class="strategy-metrics">
+                        <div class="metric">
+                            <p class="metric-value">72%</p>
+                            <p class="metric-label">胜率</p>
+                        </div>
+                        <div class="metric">
+                            <p class="metric-value">2.1</p>
+                            <p class="metric-label">收益风险比</p>
+                        </div>
+                        <div class="metric">
+                            <p class="metric-value">18%</p>
+                            <p class="metric-label">年化收益</p>
+                        </div>
+                    </div>
+                    <p class="strategy-description">基于中证1000指数成分股基本面分析和估值偏离度，在指数超跌时买入看涨期权，等待价值回归获利。</p>
+                    <div class="strategy-action">
+                        <a href="#" class="strategy-button">查看详情</a>
+                    </div>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-header">
+                        <h3 class="strategy-title">事件驱动策略</h3>
+                        <span class="strategy-tag">高收益</span>
+                    </div>
+                    <div class="strategy-metrics">
+                        <div class="metric">
+                            <p class="metric-value">58%</p>
+                            <p class="metric-label">胜率</p>
+                        </div>
+                        <div class="metric">
+                            <p class="metric-value">3.2</p>
+                            <p class="metric-label">收益风险比</p>
+                        </div>
+                        <div class="metric">
+                            <p class="metric-value">42%</p>
+                            <p class="metric-label">年化收益</p>
+                        </div>
+                    </div>
+                    <p class="strategy-description">捕捉重大经济数据发布、政策变动等市场事件前后的波动机会，提前布局相应期权策略，把握短期大幅波动行情。</p>
+                    <div class="strategy-action">
+                        <a href="#" class="strategy-button">查看详情</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="data-section">
+        <div class="container">
+            <h2 class="section-title">市场数据分析</h2>
+            <div class="data-tabs">
+                <button class="data-tab active">技术指标</button>
+                <button class="data-tab">波动率分析</button>
+                <button class="data-tab">期权链分析</button>
+                <button class="data-tab">成交量分析</button>
+            </div>
+            <div class="data-content">
+                <div class="data-chart">
+                    <!-- 这里将来放置数据图表 -->
+                </div>
+                <div class="data-indicators">
+                    <div class="indicator">
+                        <p class="indicator-value">67.8</p>
+                        <p class="indicator-label">RSI(14)</p>
+                    </div>
+                    <div class="indicator">
+                        <p class="indicator-value">0.24</p>
+                        <p class="indicator-label">MACD</p>
+                    </div>
+                    <div class="indicator">
+                        <p class="indicator-value">82.3</p>
+                        <p class="indicator-label">随机指标K</p>
+                    </div>
+                    <div class="indicator">
+                        <p class="indicator-value">24.5%</p>
+                        <p class="indicator-label">隐含波动率</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">用户评价</h2>
+            <div class="testimonial-slider">
+                <div class="testimonial-card">
+                    <p class="testimonial-content">使用这个平台的交易策略已经三个月了，期权交易胜率明显提升，尤其是波动率突破策略非常适合当前的市场环境。</p>
+                    <div class="testimonial-author">
+                        <img src="static/avatar1.jpg" alt="User Avatar" class="author-avatar">
+                        <div class="author-info">
+                            <h4>张先生</h4>
+                            <p>专业投资者</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">平台的实时数据分析和技术指标监控功能非常强大，帮助我准确把握了多次中证1000指数的重要转折点。</p>
+                    <div class="testimonial-author">
+                        <img src="static/avatar2.jpg" alt="User Avatar" class="author-avatar">
+                        <div class="author-info">
+                            <h4>李女士</h4>
+                            <p>量化交易员</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">作为一名期权交易新手，这个平台的策略推荐和历史回测功能帮助我快速入门，避免了很多常见错误。</p>
+                    <div class="testimonial-author">
+                        <img src="static/avatar3.jpg" alt="User Avatar" class="author-avatar">
+                        <div class="author-info">
+                            <h4>王先生</h4>
+                            <p>个人投资者</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">开始您的智能交易之旅</h2>
+                <p class="cta-description">立即注册，获取7天免费试用期，体验我们的中证1000指数期权交易策略平台。</p>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button">免费注册</a>
+                    <a href="#" class="secondary-button">了解会员方案</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">
+                        <img src="static/logo.png" alt="Logo">
+                    </div>
+                    <p class="footer-description">专业的中证1000指数期权交易策略平台，为投资者提供数据驱动的量化交易解决方案。</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">微</a>
+                        <a href="#" class="social-link">微</a>
+                        <a href="#" class="social-link">知</a>
+                        <a href="#" class="social-link">抖</a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="footer-title">快速链接</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">首页</a></li>
+                        <li><a href="#">市场分析</a></li>
+                        <li><a href="#">交易策略</a></li>
+                        <li><a href="#">历史回测</a></li>
+                        <li><a href="#">实时监控</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="footer-title">资源中心</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">策略文档</a></li>
+                        <li><a href="#">视频教程</a></li>
+                        <li><a href="#">常见问题</a></li>
+                        <li><a href="#">API文档</a></li>
+                        <li><a href="#">市场研报</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="footer-title">联系我们</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">客服支持</a></li>
+                        <li><a href="#">商务合作</a></li>
+                        <li><a href="#">加入我们</a></li>
+                        <li><a href="#">投诉建议</a></li>
+                        <li><a href="#">隐私政策</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2023 中证1000指数期权交易策略平台 版权所有</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 全局交互脚本 -->
+    <script src="global-interactions.js"></script>
+    <script>
+        // 页面特定的JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为特色功能卡片添加交错动画
+            document.querySelectorAll('.feature-card').forEach((card, index) => {
+                card.style.animationDelay = (index * 0.2) + 's';
+                card.classList.add('fade-in');
+            });
+            
+            // 模拟数据加载
+            console.log('页面加载完成，准备初始化图表和数据...');
+            
+            // 选项卡切换逻辑
+            const tabs = document.querySelectorAll('.data-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    // 这里将来添加内容切换逻辑
+                });
+            });
+        });
+    </script>
+</body>
+</html>

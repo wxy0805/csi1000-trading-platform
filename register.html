@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - CSI 1000期权量化交易平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+        }
+
+        .register-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 32px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #cccccc;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .form-input::placeholder {
+            color: #888;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 120px;
+            gap: 10px;
+        }
+
+        .verify-btn {
+            padding: 15px 10px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            border-radius: 10px;
+            color: #00ffff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .verify-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .terms {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #cccccc;
+        }
+
+        .terms a {
+            color: #00ffff;
+            text-decoration: none;
+        }
+
+        .terms a:hover {
+            color: #ff00ff;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            color: #888;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(0, 255, 255, 0.3);
+        }
+
+        .divider span {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            padding: 0 15px;
+        }
+
+        .login-link {
+            text-align: center;
+            color: #cccccc;
+        }
+
+        .login-link a {
+            color: #00ffff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .login-link a:hover {
+            color: #ff00ff;
+        }
+
+        .back-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .back-home:hover {
+            color: #ff00ff;
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .strength-weak { color: #ff0000; }
+        .strength-medium { color: #ffff00; }
+        .strength-strong { color: #00ff00; }
+
+        @media (max-width: 480px) {
+            .register-container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-home">← 返回首页</a>
+    
+    <div class="register-container">
+        <div class="logo">
+            <h1>QuantTrade Pro</h1>
+            <p>创建您的交易账户</p>
+        </div>
+        
+        <form id="registerForm">
+            <div class="form-group">
+                <label class="form-label">用户名</label>
+                <input type="text" class="form-input" id="username" placeholder="请输入用户名" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">邮箱地址</label>
+                <input type="email" class="form-input" id="email" placeholder="请输入邮箱地址" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">手机号码</label>
+                <input type="tel" class="form-input" id="phone" placeholder="请输入手机号码" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">验证码</label>
+                <div class="form-row">
+                    <input type="text" class="form-input" id="verifyCode" placeholder="请输入验证码" required>
+                    <button type="button" class="verify-btn" onclick="sendVerifyCode()">发送验证码</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">密码</label>
+                <input type="password" class="form-input" id="password" placeholder="请输入密码" required>
+                <div class="password-strength" id="passwordStrength"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">确认密码</label>
+                <input type="password" class="form-input" id="confirmPassword" placeholder="请再次输入密码" required>
+            </div>
+            
+            <div class="terms">
+                <input type="checkbox" id="agreeTerms" required>
+                <span>我已阅读并同意<a href="#">用户协议</a>和<a href="#">隐私政策</a></span>
+            </div>
+            
+            <button type="submit" class="register-btn">注册账户</button>
+        </form>
+        
+        <div class="divider">
+            <span>或</span>
+        </div>
+        
+        <div class="login-link">
+            <p>已有账户？<a href="login.html">立即登录</a></p>
+        </div>
+    </div>
+
+    <script>
+        let verifyCountdown = 0;
+        
+        function sendVerifyCode() {
+            const phone = document.getElementById('phone').value;
+            if (!phone) {
+                alert('请先输入手机号码');
+                return;
+            }
+            
+            if (verifyCountdown > 0) {
+                return;
+            }
+            
+            const btn = document.querySelector('.verify-btn');
+            verifyCountdown = 60;
+            
+            const timer = setInterval(() => {
+                btn.textContent = `${verifyCountdown}秒后重发`;
+                verifyCountdown--;
+                
+                if (verifyCountdown < 0) {
+                    clearInterval(timer);
+                    btn.textContent = '发送验证码';
+                }
+            }, 1000);
+            
+            // 模拟发送验证码
+            alert('验证码已发送到您的手机');
+        }
+        
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthDiv = document.getElementById('passwordStrength');
+            
+            if (password.length < 6) {
+                strengthDiv.textContent = '密码强度：弱';
+                strengthDiv.className = 'password-strength strength-weak';
+            } else if (password.length < 10) {
+                strengthDiv.textContent = '密码强度：中';
+                strengthDiv.className = 'password-strength strength-medium';
+            } else {
+                strengthDiv.textContent = '密码强度：强';
+                strengthDiv.className = 'password-strength strength-strong';
+            }
+        });
+        
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('两次输入的密码不一致');
+                return;
+            }
+            
+            if (!document.getElementById('agreeTerms').checked) {
+                alert('请同意用户协议和隐私政策');
+                return;
+            }
+            
+            // 模拟注册过程
+            const btn = document.querySelector('.register-btn');
+            btn.textContent = '注册中...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                alert('注册成功！请登录您的账户');
+                window.location.href = 'login.html';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

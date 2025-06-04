@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史回测 - CSI 1000期权量化交易平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ffff;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #00ffff;
+        }
+
+        /* 主要内容 */
+        .main-content {
+            margin-top: 80px;
+            padding: 40px 0;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 42px;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            color: #cccccc;
+        }
+
+        /* 回测配置区域 */
+        .backtest-config {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .config-title {
+            font-size: 24px;
+            color: #00ffff;
+            margin-bottom: 25px;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .config-group {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #00ffff;
+        }
+
+        .config-label {
+            display: block;
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .config-input, .config-select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        .config-input:focus, .config-select:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        /* 按钮样式 */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: #000;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #00ffff;
+            border: 2px solid #00ffff;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.3);
+        }
+
+        /* 回测结果区域 */
+        .backtest-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .card-title {
+            font-size: 24px;
+            color: #00ffff;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        /* 性能指标 */
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .metric-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: #cccccc;
+            font-size: 14px;
+        }
+
+        /* 图表容器 */
+        .chart-container {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cccccc;
+        }
+
+        /* 交易记录表格 */
+        .trade-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .trade-table th,
+        .trade-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .trade-table th {
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        .trade-table td {
+            color: #ffffff;
+        }
+
+        .profit { color: #00ff00; }
+        .loss { color: #ff0000; }
+
+        /* 加载动画 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #00ffff;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .backtest-results {
+                grid-template-columns: 1fr;
+            }
+            
+            .performance-metrics {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">QuantTrade Pro</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="market-analysis.html">市场分析</a></li>
+                    <li><a href="strategy-details.html">交易策略</a></li>
+                    <li><a href="backtest.html">历史回测</a></li>
+                    <li><a href="live-trading.html">实时交易</a></li>
+                    <li><a href="login.html">登录</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <h1 class="page-title">历史回测系统</h1>
+                <p class="page-subtitle">验证策略有效性，优化交易参数</p>
+            </div>
+
+            <!-- 回测配置 -->
+            <div class="backtest-config">
+                <h2 class="config-title">回测参数配置</h2>
+                <div class="config-grid">
+                    <div class="config-group">
+                        <label class="config-label">回测时间范围</label>
+                        <input type="date" class="config-input" id="start-date" value="2023-01-01">
+                        <input type="date" class="config-input" id="end-date" value="2024-01-01" style="margin-top: 10px;">
+                    </div>
+                    <div class="config-group">
+                        <label class="config-label">初始资金</label>
+                        <input type="number" class="config-input" id="initial-capital" value="1000000" placeholder="请输入初始资金">
+                    </div>
+                    <div class="config-group">
+                        <label class="config-label">交易标的</label>
+                        <select class="config-select" id="trading-symbol">
+                            <option value="CSI1000">CSI 1000 ETF期权</option>
+                            <option value="CSI300">CSI 300 ETF期权</option>
+                            <option value="SSE50">上证50 ETF期权</option>
+                        </select>
+                    </div>
+                    <div class="config-group">
+                        <label class="config-label">策略类型</label>
+                        <select class="config-select" id="strategy-type">
+                            <option value="buyer">期权买方策略</option>
+                            <option value="seller">期权卖方策略</option>
+                            <option value="arbitrage">套利策略</option>
+                        </select>
+                    </div>
+                    <div class="config-group">
+                        <label class="config-label">单笔仓位比例</label>
+                        <input type="number" class="config-input" id="position-size" value="5" min="1" max="20" placeholder="%">
+                    </div>
+                    <div class="config-group">
+                        <label class="config-label">止损比例</label>
+                        <input type="number" class="config-input" id="stop-loss" value="30" min="10" max="50" placeholder="%">
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="startBacktest()">开始回测</button>
+                    <button class="btn btn-secondary" onclick="resetConfig()">重置配置</button>
+                </div>
+            </div>
+
+            <!-- 加载动画 -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>回测计算中，请稍候...</p>
+            </div>
+
+            <!-- 回测结果 -->
+            <div class="backtest-results" id="results" style="display: none;">
+                <!-- 性能指标 -->
+                <div class="result-card">
+                    <h2 class="card-title">性能指标</h2>
+                    <div class="performance-metrics">
+                        <div class="metric-item">
+                            <div class="metric-value" id="total-return">+23.5%</div>
+                            <div class="metric-label">总收益率</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value" id="annual-return">+15.8%</div>
+                            <div class="metric-label">年化收益率</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value" id="sharpe-ratio">1.42</div>
+                            <div class="metric-label">夏普比率</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value" id="max-drawdown">-8.5%</div>
+                            <div class="metric-label">最大回撤</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value" id="win-rate">68.5%</div>
+                            <div class="metric-label">胜率</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value" id="profit-factor">2.15</div>
+                            <div class="metric-label">盈亏比</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 风险分析 -->
+                <div class="result-card">
+                    <h2 class="card-title">风险分析</h2>
+                    <div class="performance-metrics">
+                        <div class="metric-item">
+                            <div class="metric-value" id="volatility">12.3%</div>
+                            <div class="metric-label">年化波动率</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value" id="var">-2.8%</div>
+                            <div class="metric-label">VaR(95%)</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value" id="beta">0.85</div>
+                            <div class="metric-label">Beta系数</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value" id="calmar">1.86</div>
+                            <div class="metric-label">Calmar比率</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 收益曲线图 -->
+            <div class="result-card" id="chart-section" style="display: none;">
+                <h2 class="card-title">收益曲线</h2>
+                <div class="chart-container">
+                    <div style="text-align: center;">
+                        <p style="font-size: 18px; margin-bottom: 20px;">📈 策略收益曲线图</p>
+                        <p>• 蓝线：策略收益</p>
+                        <p>• 红线：基准收益(CSI 1000)</p>
+                        <p>• 绿线：累计回撤</p>
+                        <p style="margin-top: 20px; color: #00ffff;">图表功能开发中...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 交易记录 -->
+            <div class="result-card" id="trades-section" style="display: none;">
+                <h2 class="card-title">交易记录</h2>
+                <table class="trade-table">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>合约</th>
+                            <th>方向</th>
+                            <th>开仓价</th>
+                            <th>平仓价</th>
+                            <th>收益率</th>
+                            <th>持仓天数</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trades-tbody">
+                        <tr>
+                            <td>2023-03-15</td>
+                            <td>CSI1000C2300</td>
+                            <td>买入</td>
+                            <td>0.0285</td>
+                            <td>0.0420</td>
+                            <td class="profit">+47.4%</td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <td>2023-03-22</td>
+                            <td>CSI1000P2250</td>
+                            <td>买入</td>
+                            <td>0.0195</td>
+                            <td>0.0135</td>
+                            <td class="loss">-30.8%</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>2023-04-08</td>
+                            <td>CSI1000C2350</td>
+                            <td>买入</td>
+                            <td>0.0315</td>
+                            <td>0.0485</td>
+                            <td class="profit">+54.0%</td>
+                            <td>7</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function startBacktest() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('chart-section').style.display = 'none';
+            document.getElementById('trades-section').style.display = 'none';
+            
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('results').style.display = 'grid';
+                document.getElementById('chart-section').style.display = 'block';
+                document.getElementById('trades-section').style.display = 'block';
+                updateBacktestResults();
+            }, 3000);
+        }
+        
+        function updateBacktestResults() {
+            const totalReturn = (Math.random() * 40 - 10).toFixed(1);
+            const annualReturn = (totalReturn * 0.7).toFixed(1);
+            const sharpeRatio = (Math.random() * 2 + 0.5).toFixed(2);
+            const maxDrawdown = -(Math.random() * 15 + 5).toFixed(1);
+            const winRate = (Math.random() * 30 + 50).toFixed(1);
+            const profitFactor = (Math.random() * 2 + 1).toFixed(2);
+            
+            document.getElementById('total-return').textContent = totalReturn + '%';
+            document.getElementById('annual-return').textContent = annualReturn + '%';
+            document.getElementById('sharpe-ratio').textContent = sharpeRatio;
+            document.getElementById('max-drawdown').textContent = maxDrawdown + '%';
+            document.getElementById('win-rate').textContent = winRate + '%';
+            document.getElementById('profit-factor').textContent = profitFactor;
+        }
+        
+        function resetConfig() {
+            document.getElementById('start-date').value = '2023-01-01';
+            document.getElementById('end-date').value = '2024-01-01';
+            document.getElementById('initial-capital').value = '1000000';
+            document.getElementById('trading-symbol').value = 'CSI1000';
+            document.getElementById('strategy-type').value = 'buyer';
+            document.getElementById('position-size').value = '5';
+            document.getElementById('stop-loss').value = '30';
+            
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('chart-section').style.display = 'none';
+            document.getElementById('trades-section').style.display = 'none';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('历史回测页面加载完成');
+        });
+    </script>
+</body>
+</html>
