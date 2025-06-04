@@ -472,3 +472,21 @@ body::after {
 ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(45deg, #00b8e6, #e55555);
 }
+
+/* 浏览器兼容性前缀 */
+.browser-compatibility {
+    -webkit-transition: all 0.3s ease; /* Safari 和 Chrome */
+    -moz-transition: all 0.3s ease; /* Firefox */
+    -ms-transition: all 0.3s ease; /* Internet Explorer */
+    -o-transition: all 0.3s ease; /* Opera */
+    transition: all 0.3s ease;
+}
+
+/* 确保flexbox在旧版浏览器中工作 */
+.flex-container {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
