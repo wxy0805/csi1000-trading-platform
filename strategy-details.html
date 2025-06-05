@@ -355,6 +355,7 @@
         }
     </style>
 </head>
+<script src="functions.js"></script>
 <body>
     <!-- 导航栏 -->
     <nav class="navbar">
@@ -365,8 +366,8 @@
                     <li><a href="index.html">首页</a></li>
                     <li><a href="market-analysis.html">市场分析</a></li>
                     <li><a href="strategy-details.html">交易策略</a></li>
-                    <li><a href="#">历史回测</a></li>
-                    <li><a href="#">实时交易</a></li>
+                    <li><a href="backtest.html">历史回测</a></li>
+                    <li><a href="live-trading.html">实时交易</a></li>
                 </ul>
             </div>
         </div>
@@ -554,12 +555,12 @@
                     <div class="strategy-card">
                         <h2 class="card-title">策略操作</h2>
                         <div class="btn-group">
-                            <a href="#" class="btn btn-primary">启动策略</a>
-                            <a href="#" class="btn btn-secondary">暂停策略</a>
+                            <a href="live-trading.html" class="btn btn-primary">启动策略</a>
+                            <a href="javascript:void(0);" class="btn btn-secondary" onclick="alert('策略已暂停')">暂停策略</a>
                         </div>
                         <div class="btn-group">
-                            <a href="#" class="btn btn-secondary">参数调整</a>
-                            <a href="#" class="btn btn-secondary">历史回测</a>
+                            <a href="#" class="btn btn-secondary" onclick="alert('参数调整功能开发中')">参数调整</a>
+                            <a href="backtest.html" class="btn btn-secondary">历史回测</a>
                         </div>
                     </div>
                 </div>

@@ -305,6 +305,7 @@
         }
     </style>
 </head>
+<script src="functions.js"></script>
 <body>
     <nav class="navbar">
         <div class="container">
@@ -552,4 +553,13 @@
             document.querySelectorAll('.menu-link').forEach(link => {
                 link.classList.remove('active');
             });
-            event.target.classList
+            event.target.classList.add('active');
+        }
+
+        // 页面加载时显示默认内容
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('overview');
+        });
+    </script>
+</body>
+</html>

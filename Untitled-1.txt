@@ -1,0 +1,9 @@
+static/
+├── logo.png (或使用在线SVG)
+├── avatar1.jpg
+├── avatar2.jpg
+├── avatar3.jpg
+└── icons/
+    ├── trading.svg
+    ├── chart.svg
+    └── user.svg

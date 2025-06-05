@@ -248,4 +248,69 @@
 
         .form-input:focus {
             outline: none;
-            border-
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: #000000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+        }
+    </style>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">QuantTrade Pro</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="market-analysis.html">市场分析</a></li>
+                    <li><a href="strategy-details.html">交易策略</a></li>
+                    <li><a href="backtest.html">历史回测</a></li>
+                    <li><a href="live-trading.html">实时交易</a></li>
+                    <li><a href="user-profile.html">个人中心</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <h1>个人资料</h1>
+            <div class="profile-content">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">用户名</label>
+                        <input type="text" class="form-input" value="交易员001" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">邮箱</label>
+                        <input type="email" class="form-input" value="trader001@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">手机号</label>
+                        <input type="tel" class="form-input" value="138****8888">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">注册时间</label>
+                        <input type="text" class="form-input" value="2024-01-15" readonly>
+                    </div>
+                </div>
+                <button class="btn">保存修改</button>
+            </div>
+        </div>
+    </main>
+    <script src="functions.js"></script>
+</body>
+</html>

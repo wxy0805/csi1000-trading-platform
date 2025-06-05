@@ -490,3 +490,68 @@ body::after {
     display: -webkit-flex;
     display: flex;
 }
+/* Logo响应式样式 */
+.logo img {
+    height: 40px;
+    width: auto;
+    transition: all 0.3s ease;
+}
+
+.logo:hover img {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .logo img {
+        height: 32px;
+    }
+}
+
+/* 头像样式优化 */
+.author-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+    transition: transform 0.3s ease;
+}
+
+.author-avatar:hover {
+    transform: scale(1.1);
+}
+
+/* 通知样式 */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    color: white;
+    border-radius: 4px;
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+}
+
+.notification.success {
+    background: #4CAF50;
+}
+
+.notification.error {
+    background: #f44336;
+}
+
+.notification.info {
+    background: #2196F3;
+}
+
+@keyframes slideIn {
+    from { 
+        transform: translateX(100%); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateX(0); 
+        opacity: 1; 
+    }
+}
